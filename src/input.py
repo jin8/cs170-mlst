@@ -2,8 +2,10 @@ import fileinput, sys
 
 class Graph:
     def __init__(self, inputFile):
-        if inputFile == None: return
-        self.graph, self.numEdges = {}, int(inputFile.readline().strip())
+        if inputFile == None:
+            self.graph, self.numEdges = {}, 0
+            return
+        self.numEdges = int(inputFile.readline().strip())
         for i in range(0, self.numEdges):
             edge = inputFile.readline().split(' ')
             vertex1, vertex2 = int(edge[0].strip()), int(edge[1].strip())
@@ -49,24 +51,20 @@ class Graph:
         for edge in edges:
             outputFile.write(str(min(edge[0], edge[1])) + " " + str(max(edge[0], edge[1])) + "\n")
 
-def createGraphs(graphs):
-    f = open(sys.argv[1])
+def createGraphs(graphs, inputFileName):
+    f = open(inputFileName)
     numGraphs = int(f.readline())
     for i in range(0, numGraphs):
         graphs.append(Graph(f))
-    graphs[1].addEdge([10, 4])
-    graphs[1].deleteEdge([1,10])
-    graphs[1].deleteEdge([10,4])
-    outputGraphs(graphs[1:2])
     f.close()
     
-def outputGraphs(graphs):
-    f = open(sys.argv[2], 'w')
+def outputGraphs(graphs, outputFileName):
+    f = open(outputFileName, 'w')
     f.write(str(len(graphs)) + "\n")
     for graph in graphs:
         graph.outputGraph(f)
     f.close()
           
-graphs = []
-createGraphs(graphs)         
+#graphs = []
+#createGraphs(graphs, sys.argv[1])         
 
