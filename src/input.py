@@ -39,11 +39,24 @@ class Graph:
         for u in g.keys():
             for v in g[u]:
                 g[v].remove(u)
-                edges.append([u, v])
+                edges.append([min(u, v), max(u, v)])
         return edges
     
+    def getVertices(self):
+        return self.graph.keys()
+        
     def getAdjacentVertices(self, vertex):
         return self.graph[vertex]
+
+    def addVertex(self, vertex):
+        self.graph[vertex] = []
+
+    def mergeGraphs(self, graph):
+        edges = self.getEdges()
+        newEdges = graph.getEdges()
+        for edge in newEdges:
+            if not edge in edges:
+                self.addEdge(edge)
                 
     def outputGraph(self, outputFile):
         edges = self.getEdges()
