@@ -1,9 +1,8 @@
-import sys, fileinput, input, input.Graph
+import sys, fileinput
 
-def mlstSolver(graph):
+def mlstSolver(graph, output):
 	forest = []
 	S, d = {}, {}
-	output = Graph(None)
 
 	for v in graph.getVertices():
 		S[v] = [v]

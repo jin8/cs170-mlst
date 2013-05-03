@@ -79,11 +79,12 @@ def outputGraphs(graphs, outputFileName):
         graph.outputGraph(f)
     f.close()
 
-from mlstSolver import *     
+import mlstSolver
 graphs, outputs = [], []
 createGraphs(graphs, sys.argv[1]) 
 for i in range(0, len(graphs)):
-    outputs[i] = mlstSolver(graphs[i])
+    outputs.append([])
+    mlstSolver(graphs[i], outputs[i])
 
 outputGraphs(outputs, sys.argv[2])
 
