@@ -2,15 +2,16 @@ import fileinput, sys
 
 class Graph:
     def __init__(self, inputFile):
+        self.graph = {}
         if inputFile == None:
-            self.graph, self.numEdges = {}, 0
+            self.numEdges = 0
             return
         self.numEdges = int(inputFile.readline().strip())
         for i in range(0, self.numEdges):
             edge = inputFile.readline().split(' ')
             vertex1, vertex2 = int(edge[0].strip()), int(edge[1].strip())
-            if not vertex1 in self.graph: self.graph[vertex1] = []
-            if not vertex2 in self.graph: self.graph[vertex2] = []
+            if not vertex1 in self.graph.keys(): self.graph[vertex1] = []
+            if not vertex2 in self.graph.keys(): self.graph[vertex2] = []
             self.graph[vertex1].append(vertex2)
             self.graph[vertex2].append(vertex1)
     
@@ -77,7 +78,12 @@ def outputGraphs(graphs, outputFileName):
     for graph in graphs:
         graph.outputGraph(f)
     f.close()
-          
-#graphs = []
-#createGraphs(graphs, sys.argv[1])         
+
+from mlstSolver import *     
+graphs, outputs = [], []
+createGraphs(graphs, sys.argv[1]) 
+for i in range(0, len(graphs)):
+    outputs[i] = mlstSolver(graphs[i])
+
+outputGraphs(outputs, sys.argv[2])
 
