@@ -84,7 +84,7 @@ graphs, outputs = [], []
 createGraphs(graphs, sys.argv[1]) 
 for i in range(0, len(graphs)):
     outputs.append([])
-    mlstSolver(graphs[i], outputs[i])
+    mlstSolver.mlstSolver(graphs[i], outputs[i])
 
 outputGraphs(outputs, sys.argv[2])
 
