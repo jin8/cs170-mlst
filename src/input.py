@@ -1,8 +1,9 @@
 import fileinput, sys
-
+import mlstSolver
 class Graph:
-    def __init__(self, inputFile):
+    def __init__(self, inputFile= None):
         self.graph = {}
+        
         if inputFile == None:
             self.numEdges = 0
             return
@@ -15,6 +16,8 @@ class Graph:
             self.graph[vertex1].append(vertex2)
             self.graph[vertex2].append(vertex1)
     
+   # def numOfEdges(self):
+    #    return numEdges
     def deleteEdge(self, edge):
         u, v = edge
         self.graph[u].remove(v)
@@ -84,7 +87,8 @@ graphs, outputs = [], []
 createGraphs(graphs, sys.argv[1]) 
 for i in range(0, len(graphs)):
     outputs.append([])
-    mlstSolver.mlstSolver(graphs[i], outputs[i])
+    outputs[i] = Graph()
+    mlstSolver.solver(graphs[i], outputs[i])
 
 outputGraphs(outputs, sys.argv[2])
 
