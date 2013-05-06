@@ -91,4 +91,4 @@ for i in range(0, len(graphs)):
     mlstSolver.solver(graphs[i], outputs[i])
 
 outputGraphs(outputs, sys.argv[2])
-
+    

@@ -1,5 +1,6 @@
 import sys, fileinput
 
+#source: http://repository.cmu.edu/cgi/viewcontent.cgi?article=1417&context=tepper
 def solver(graph, output):
     forest = []
     S, d = {}, {}
@@ -24,25 +25,77 @@ def solver(graph, output):
                 d[u], d[v] = d[u] + 1, d[v] + 1
             for n in S[v]:
                 S[n] = S[v]
-        print "v = " + str(v)
-        print "dict is" + str(S)
-        print "degree is" + str(d)
+        #print "v = " + str(v)
+        #print "dict is" + str(S)
+        #print "degree is" + str(d)
     
     for edge in forest:
-        output.addEdge(edge)    
+        output.addEdge(edge)
+    for v in graph.getVertices():
+        if v not in output.getVertices():
+            output.graph[v] = []
+        
+    edges = mergeSets(graph, output, findColoredSets(graph, output))
+    for edge in edges:
+        output.addEdge(edge)
     return output
 
         
-def breadthFirstSearch(graph):
-    vertices, visited, color = graph.getVertices(),[], []
+def findColoredSets(graph, output):
+    vertices, visited, color = graph.getVertices(),[], {}
     currentColor = 0
     while (len(vertices) != 0):
         start = [vertices[0]]
-        while not len(start) != 0:
+        color[currentColor] = []
+        while len(start) != 0:
             node = start.pop(0)    
             if node not in visited:
                 visited.append(node)
-                start.extend(graph.getAdjacentVertices(node))
+                start.extend(output.getAdjacentVertices(node))
                 vertices.remove(node)
-                color[node] = currentColor
-        currentColor++
+                color[currentColor].append(node)
+        currentColor += 1
+    return color
+    
+def mergeSets(graph, forestGraph, ColoredSets):
+    edges, sets = [], ColoredSets.values()
+    if len(sets) == 1: return []
+    while len(sets) > 1:
+        edge, leafEdges = None, []
+        for v in sets[0]:
+            for u in graph.getAdjacentVertices(v):
+                if u in sets[0]: continue
+                if len(forestGraph.getAdjacentVertices(v)) == 1 or len(forestGraph.getAdjacentVertices(u)) == 1:
+                    leafEdges.append([u,v])
+                    continue
+                edge = [u, v]
+                break
+            if edge != None: break
+        if edge == None:
+            for e in leafEdges:
+                if len(forestGraph.getAdjacentVertices(e[0])) > 1 or len(forestGraph.getAdjacentVertices(e[1])) > 1:
+                    edge = e
+                    break
+        if edge == None: edge = leafEdges[0]
+        edges.append(edge)
+        index = -1
+        for i in range(1, len(sets)):
+            if sets[i] == None:
+                print "blah"
+            if edge[0] in sets[i] or edge[1] in sets[i]:
+                index = i
+                break
+        s = sets[0] + sets[index]
+        sets.remove(sets[index])
+        sets.remove(sets[0])
+        sets.append(s)
+    return edges
+        
+            
+            
+                
+                    
+                    
+                    
+                    
+                    
