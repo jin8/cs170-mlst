@@ -24,6 +24,18 @@ class Graph:
         self.graph[v].remove(u)
         self.numEdges -= 1
     
+    def deleteVertex(self, vertex):
+        adjacentVertices = self.graph[vertex]
+        while len(self.graph[vertex]) != 0:
+            self.deleteEdge([vertex, self.graph[vertex][0]])
+        del self.graph[vertex]
+        
+    def deepCopy(self):
+        g = Graph()
+        for edge in self.getEdges():
+            g.addEdge(edge)
+        return g
+            
     def addEdge(self, edge):
         u, v = edge
         try:
@@ -38,8 +50,10 @@ class Graph:
             self.graph[v].append(u)
         self.numEdges += 1
     
+
     def getEdges(self):
-        g, edges = self.graph, []
+        from copy import deepcopy
+        g, edges = deepcopy(self.graph), []
         for u in g.keys():
             for v in g[u]:
                 g[v].remove(u)
@@ -82,13 +96,14 @@ def outputGraphs(graphs, outputFileName):
         graph.outputGraph(f)
     f.close()
 
-import mlstSolver
+import mlstSolver, exactMlstSolver
 graphs, outputs = [], []
 createGraphs(graphs, sys.argv[1]) 
 for i in range(0, len(graphs)):
     outputs.append([])
     outputs[i] = Graph()
-    mlstSolver.solver(graphs[i], outputs[i])
+    #mlstSolver.solver(graphs[i], outputs[i])
+    print exactMlstSolver.isCutVertex(graphs[i], 5)
 
 outputGraphs(outputs, sys.argv[2])
     
