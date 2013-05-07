@@ -1,5 +1,7 @@
 import fileinput, sys
 import mlstSolver
+import itertools
+
 class Graph:
     def __init__(self, inputFile= None):
         self.graph = {}
@@ -78,9 +80,9 @@ class Graph:
                 
     def outputGraph(self, outputFile):
         edges = self.getEdges()
-        outputFile.write(str(self.numEdges) + "\n")
+        outputFile.write("\n" + str(self.numEdges))
         for edge in edges:
-            outputFile.write(str(min(edge[0], edge[1])) + " " + str(max(edge[0], edge[1])) + "\n")
+            outputFile.write("\n" + str(min(edge[0], edge[1])) + " " + str(max(edge[0], edge[1])))
 
 def createGraphs(graphs, inputFileName):
     f = open(inputFileName)
@@ -91,19 +93,51 @@ def createGraphs(graphs, inputFileName):
     
 def outputGraphs(graphs, outputFileName):
     f = open(outputFileName, 'w')
-    f.write(str(len(graphs)) + "\n")
+    f.write(str(len(graphs)))
     for graph in graphs:
         graph.outputGraph(f)
     f.close()
 
-import mlstSolver, exactMlstSolver
-graphs, outputs = [], []
+def finalSolver(graph):
+    edges = graph.getEdges()
+    maxGraph, maxLeaves = None, 0
+    combinations = list(itertools.combinations(edges, r = len(graph.getVertices()) - 1))
+    for comb in combinations:
+        g = Graph()
+        for edge in comb: g.addEdge(edge)
+        if not isConnected(g): continue
+        Counter = 0
+        for v in g.getVertices():
+            if len(g.getAdjacentVertices(v)) == 1:
+                Counter += 1
+        if maxLeaves < Counter:
+            maxLeaves = Counter
+            maxGraph = g
+    return maxGraph
+
+def isConnected(graph):
+    start, visited= [graph.getVertices()[0]], []
+    while len(start) != 0:
+        node = start.pop(0)
+        if node not in visited:
+            visited.append(node)
+            start.extend(graph.getAdjacentVertices(node))
+    return len(visited) == len(graph.getVertices())
+
+
+
+import mlstSolver
+graphs, outputs, outputs2 = [], [], []
 createGraphs(graphs, sys.argv[1]) 
 for i in range(0, len(graphs)):
     outputs.append([])
-    outputs[i] = Graph()
+    outputs[i] = finalSolver(graphs[i])
+    
+    outputs2.append(Graph())
+    mlstSolver.solver(graphs[i], outputs2[i])
     #mlstSolver.solver(graphs[i], outputs[i])
-    print exactMlstSolver.isCutVertex(graphs[i], 5)
+#print exactMlstSolver.isCutVertex(graphs[i], 5)
 
 outputGraphs(outputs, sys.argv[2])
+outputGraphs(outputs2, sys.argv[3])
     
