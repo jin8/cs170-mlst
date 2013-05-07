@@ -127,17 +127,15 @@ def isConnected(graph):
 
 
 import mlstSolver
-graphs, outputs, outputs2 = [], [], []
+graphs, outputs = [], []
 createGraphs(graphs, sys.argv[1]) 
 for i in range(0, len(graphs)):
-    outputs.append([])
-    outputs[i] = finalSolver(graphs[i])
-    
-    outputs2.append(Graph())
-    mlstSolver.solver(graphs[i], outputs2[i])
-    #mlstSolver.solver(graphs[i], outputs[i])
-#print exactMlstSolver.isCutVertex(graphs[i], 5)
+    if len(graphs[i].getEdges()) < 40:
+        outputs.append([])
+        outputs[i] = finalSolver(graphs[i])
+    else:
+        outputs.append(Graph())
+        mlstSolver.solver(graphs[i], outputs[i])
 
 outputGraphs(outputs, sys.argv[2])
-outputGraphs(outputs2, sys.argv[3])
     
